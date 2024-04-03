@@ -2,6 +2,7 @@ import torch
 from tqdm import tqdm
 from .beam_search import beam_search
 from .utils import calc_bleu_score, create_src_mask, calc_f_beta, calc_recall, calc_precision
+from torch.nn.utils.rnn import pad_sequence
 
 def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size, have_test=False):
     device = config["device"]
@@ -13,6 +14,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
     count = 0
 
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
+    pad_index = tokenizer_tgt.token_to_id("[PAD]")
 
     recalls = list()
     precisions = list()
@@ -39,13 +41,17 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         pred_ids = model_out.detach().cpu().numpy()
         pred_text = tokenizer_tgt.decode(pred_ids)
 
+        padding = pad_sequence([label_ids, pred_ids], padding_value=pad_index, batch_first=True)
+        label_ids = padding[0]
+        pred_ids = padding[1]
+
         source_texts.append(tokenizer_src.encode(src_text).tokens)
         expected.append([tokenizer_tgt.encode(tgt_text).tokens])
         predicted.append(tokenizer_tgt.encode(pred_text).tokens)
 
-        recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size)
-        precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size)
-        f_05 = calc_f_beta(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size)
+        recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index)
+        precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index)
+        f_05 = calc_f_beta(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index)
 
         recalls.append(recall)
         precisions.append(precision)

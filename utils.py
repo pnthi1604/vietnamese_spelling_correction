@@ -42,16 +42,16 @@ def calc_bleu_score(refs, cands):
                                  weights=weights))
     return scores
 
-def calc_recall(preds: torch.tensor, target: torch.tensor, tgt_vocab_size: int):
-    recall = Recall(task="multiclass", average='macro', num_classes=tgt_vocab_size)
+def calc_recall(preds: torch.tensor, target: torch.tensor, tgt_vocab_size: int, pad_index: int):
+    recall = Recall(task="multiclass", average='macro', num_classes=tgt_vocab_size, ignore_index=pad_index)
     return recall(preds, target)
 
-def calc_precision(preds: torch.tensor, target: torch.tensor, tgt_vocab_size: int):
-    precision = Precision(task="multiclass", average='macro', num_classes=tgt_vocab_size)
+def calc_precision(preds: torch.tensor, target: torch.tensor, tgt_vocab_size: int, pad_index: int):
+    precision = Precision(task="multiclass", average='macro', num_classes=tgt_vocab_size, ignore_index=pad_index)
     return precision(preds, target)
 
-def calc_f_beta(preds: torch.tensor, target: torch.tensor, beta: float, tgt_vocab_size: int):
-    f_beta = FBetaScore(task="multiclass", num_classes=tgt_vocab_size, beta=beta)
+def calc_f_beta(preds: torch.tensor, target: torch.tensor, beta: float, tgt_vocab_size: int, pad_index: int):
+    f_beta = FBetaScore(task="multiclass", num_classes=tgt_vocab_size, beta=beta, ignore_index=pad_index)
     return f_beta(preds, target)
 
 def create_src_mask(src, pad_id_token, device):
