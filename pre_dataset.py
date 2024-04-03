@@ -4,7 +4,7 @@ from underthesea import word_tokenize
 from pyvi import ViTokenizer
 import os
 from datasets import load_dataset, load_from_disk, load_from_disk
-from torch.utils.data import DataLoader, ConcatDataset
+from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 import numpy as np
 import unidecode
@@ -204,8 +204,9 @@ def create_noise(config, vi_sent):
 
 def clean_data(text, lang):
     text = BeautifulSoup(text, "html.parser").get_text()
-    text = text.lower()
-    text = contractions.fix(text.replace(" '", "'"))
+    text = (text.lower()).replace(" '", "'")
+    if lang == "en":
+        text = contractions.fix(text)
     if lang == "vi":
         text = text.replace("you", "u")
     return text

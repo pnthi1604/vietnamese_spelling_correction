@@ -1,3 +1,4 @@
+import torch
 from tqdm import tqdm
 from .beam_search import beam_search
 from .utils import calc_bleu_score, create_src_mask, calc_f_beta, calc_recall, calc_precision
@@ -13,9 +14,9 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
 
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
 
-    sum_recall = 0
-    sum_precision = 0
-    sum_f_05 = 0
+    recalls = list()
+    precisions = list()
+    f_05s = list()
 
     batch_iterator = tqdm(validation_dataloader, desc=f"Validation Bleu Epoch {epoch:02d}")
     for batch in batch_iterator:
@@ -45,10 +46,10 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size)
         precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size)
         f_05 = calc_f_beta(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size)
-        
-        sum_recall += recall
-        sum_precision += precision
-        sum_f_05 += f_05
+
+        recalls.append(recall)
+        precisions.append(precision)
+        f_05s.append(f_05)
 
         count += 1
         
@@ -68,10 +69,11 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             print(f"{precision = }")
             print(f"{f_05 = }")
 
+    recalls = torch.cat(recalls, dim=0)
+    precisions = torch.cat(precisions, dim=0)
+    f_05s = torch.cat(f_05s, dim=0)
+
     scores_corpus = calc_bleu_score(refs=expected,
                                 cands=predicted)
-    sum_recall /= len(validation_dataloader)
-    sum_precision /= len(validation_dataloader)
-    sum_f_05 /= len(validation_dataloader)
     
-    return scores_corpus, sum_recall, sum_precision, sum_f_05
+    return scores_corpus, recalls, precisions, f_05s

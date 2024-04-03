@@ -163,13 +163,15 @@ def train_model(config, model_filename=None):
               writer.flush()
 
             global_step += 1
+            #test
+            break
+            #test
         
         if config["lr_scheduler"] and config["steplr"]:
             lr_scheduler.step()
             cur_lr = lr_scheduler.get_last_lr()[0]
             writer.add_scalars('Learning_rate', {"lr": cur_lr}, epoch)
             writer.flush()
-
         with torch.no_grad():
             model.eval()
             batch_iterator = tqdm(validation_dataloader, desc=f"Validation Loss Epoch {epoch:02d}")
@@ -191,6 +193,9 @@ def train_model(config, model_filename=None):
                 loss = loss_fn(logits.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
                 batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
                 validation_loss += loss.item()
+                #test
+                break
+                #test
 
             writer.add_scalars("Loss", {
                 "Train": train_loss / len(train_dataloader),
@@ -222,19 +227,30 @@ def train_model(config, model_filename=None):
                 print(f"bleu_{i + 1}_train: {scores_train[i]} - bleu_{i + 1}_val: {scores_val[i]}")
             
             writer.add_scalars("recall", {
-                "train": sum_recall_train[i],
-                "val": sum_recall_val[i]
+                "train": sum_recall_train,
+                "val": sum_recall_val
             }, epoch)
 
             writer.add_scalars("precision", {
-                "train": sum_precision_train[i],
-                "val": sum_precision_val[i]
+                "train": sum_precision_train,
+                "val": sum_precision_val
             }, epoch)
 
             writer.add_scalars("f_05", {
-                "train": sum_f_05_train[i],
-                "val": sum_f_05_val[i]
+                "train": sum_f_05_train,
+                "val": sum_f_05_val
             }, epoch)
+
+            print(f"{sum_recall_train = }")
+            print(f"{sum_recall_val = }")
+            print(f"{sum_precision_train = }")
+            print(f"{sum_precision_val = }")
+            print(f"{sum_f_05_train = }")
+            print(f"{sum_f_05_val = }")
+            #test
+            break
+            #test
+
 
         print(f"Mean train loss: {train_loss / len(train_dataloader)}")
         print(f"Mean validation loss: {validation_loss / len(validation_dataloader)}")
