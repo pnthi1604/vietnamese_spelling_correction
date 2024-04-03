@@ -49,9 +49,9 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         expected.append([tokenizer_tgt.encode(tgt_text).tokens])
         predicted.append(tokenizer_tgt.encode(pred_text).tokens)
 
-        recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index)
-        precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index)
-        f_05 = calc_f_beta(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index)
+        recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+        precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+        f_05 = calc_f_beta(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
 
         recalls.append(recall)
         precisions.append(precision)
