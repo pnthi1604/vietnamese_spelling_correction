@@ -101,7 +101,7 @@ def test_model_with_beam_size(config, beam_size):
     for i in range(0, 4):
         bleu_results[f"Test_model_Bleu_{i + 1}"] = {}
 
-    scores_corpus = validation(model=model,
+    scores_corpus, sum_recall_val, sum_precision_val, sum_f_05_val = validation(model=model,
             config=config,
             tokenizer_src=tokenizer_src,
             tokenizer_tgt=tokenizer_tgt,
@@ -118,3 +118,11 @@ def test_model_with_beam_size(config, beam_size):
     for i in range(0, 4):
         writer.add_scalars(f"Test_model_Bleu_{i + 1}", bleu_results[f"Test_model_Bleu_{i + 1}"], 0)
         writer.close()
+
+    writer.add_scalar("Test_model_Recall", sum_recall_val, 0)
+    writer.add_scalar("Test_model_Precision", sum_precision_val, 0)
+    writer.add_scalar("Test_model_F_05", sum_f_05_val, 0)
+
+    print(f"{sum_recall_val = }")
+    print(f"{sum_precision_val = }")
+    print(f"{sum_f_05_val = }")
