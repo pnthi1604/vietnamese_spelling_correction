@@ -16,9 +16,8 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
     tgt_vocab_size = tokenizer_tgt.get_vocab_size()
     pad_index = tokenizer_tgt.token_to_id("[PAD]")
 
-    recalls = list()
-    precisions = list()
-    f_05s = list()
+    labels = []
+    preds = []
 
     batch_iterator = tqdm(validation_dataloader, desc=f"Validation Bleu Epoch {epoch:02d}")
     for batch in batch_iterator:
@@ -44,18 +43,13 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         padding = pad_sequence([torch.tensor(label_ids).to(device), torch.tensor(pred_ids).to(device)], padding_value=pad_index, batch_first=True)
         label_ids = padding[0]
         pred_ids = padding[1]
+        
+        labels.append(label_ids)
+        preds.append(pred_ids)
 
         source_texts.append(tokenizer_src.encode(src_text).tokens)
         expected.append([tokenizer_tgt.encode(tgt_text).tokens])
         predicted.append(tokenizer_tgt.encode(pred_text).tokens)
-
-        recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
-        precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
-        f_05 = calc_f_beta(preds=pred_ids, target=label_ids, beta=0.5, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
-
-        recalls.append(recall)
-        precisions.append(precision)
-        f_05s.append(f_05)
 
         count += 1
         
@@ -71,15 +65,18 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             print(f'BLEU OF SENTENCE {count}')
             for i in range(0, len(scores)):
                 print(f'BLEU_{i + 1}: {scores[i]}')
-            print(f"{recall = }")
-            print(f"{precision = }")
-            print(f"{f_05 = }")
+            # print(f"{recall = }")
+            # print(f"{precision = }")
+            # print(f"{f_05 = }")
 
-    recalls = torch.cat(recalls, dim=0)
-    precisions = torch.cat(precisions, dim=0)
-    f_05s = torch.cat(f_05s, dim=0)
+    labels = torch.cat(labels, dim=0)
+    preds = torch.cat(preds, dim=0)
+
+    recall = calc_recall(preds=preds, target=labels, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+    precision = calc_precision(preds=preds, target=labels, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+    f_05 = calc_f_beta(preds=preds, target=labels, beta=0.5, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
 
     scores_corpus = calc_bleu_score(refs=expected,
                                 cands=predicted)
     
-    return scores_corpus, recalls, precisions, f_05s
+    return scores_corpus, recall, precision, f_05
