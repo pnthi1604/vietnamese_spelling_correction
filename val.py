@@ -65,9 +65,6 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             print(f'BLEU OF SENTENCE {count}')
             for i in range(0, len(scores)):
                 print(f'BLEU_{i + 1}: {scores[i]}')
-            # print(f"{recall = }")
-            # print(f"{precision = }")
-            # print(f"{f_05 = }")
 
     labels = torch.cat(labels, dim=0)
     preds = torch.cat(preds, dim=0)
@@ -78,5 +75,9 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
 
     scores_corpus = calc_bleu_score(refs=expected,
                                 cands=predicted)
+    
+    print(f"{recall = }")
+    print(f"{precision = }")
+    print(f"{f_05 = }")
     
     return scores_corpus, recall.item(), precision.item(), f_05.item()
