@@ -79,4 +79,4 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
     scores_corpus = calc_bleu_score(refs=expected,
                                 cands=predicted)
     
-    return scores_corpus, recall, precision, f_05
+    return scores_corpus, recall.item(), precision.item(), f_05.item()
