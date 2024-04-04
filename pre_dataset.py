@@ -404,26 +404,19 @@ def check_test_item(src_sent, tgt_sent, tokenizer_src, tokenizer_tgt, config):
 
 def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
     data_test = config["data_test"]
-    if not os.path.exists(data_test):
-        raw_data= pd.read_csv("vietnamese_spelling_correction/dataset/dataset.csv")
-        data = []
-        for i in range(len(raw_data)):
-            src_sent = raw_data.wrong[i]
-            tgt_sent = raw_data.right[i]
-            if check_test_item(src_sent=src_sent, tgt_sent=tgt_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
-                data.append({
-                    config["lang_src"]: src_sent,
-                    config["lang_tgt"]: tgt_sent,
-                })
-        dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=["lang_tgt"])
-        torch.save(dataset, data_test)
-        print("Đã lưu data test thành công!\n")
-
-    test_dataset = torch.load(data_test)
-    print("Đã load data test thành công!\n")
-
+    raw_data= pd.read_csv(data_test)
+    data = []
+    for i in range(len(raw_data)):
+        src_sent = raw_data.wrong[i]
+        tgt_sent = raw_data.right[i]
+        if check_test_item(src_sent=src_sent, tgt_sent=tgt_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
+            data.append({
+                config["lang_src"]: src_sent,
+                config["lang_tgt"]: tgt_sent,
+            })
+    dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=["lang_tgt"])
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
-    test_dataloader = DataLoader(test_dataset, batch_size=1,
+    test_dataloader = DataLoader(dataset, batch_size=1,
                                             shuffle=False,
                                             collate_fn=lambda batch: collate_fn(batch=batch,
                                                                                 pad_id_token=pad_id_token,
