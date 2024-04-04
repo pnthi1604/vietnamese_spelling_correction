@@ -3,7 +3,7 @@ from torch.utils.data import Dataset
 from underthesea import word_tokenize
 from pyvi import ViTokenizer
 import os
-from datasets import load_dataset, load_from_disk, load_from_disk
+from datasets import load_dataset, load_from_disk
 from torch.utils.data import DataLoader
 from torch.nn.utils.rnn import pad_sequence
 import numpy as np
@@ -12,6 +12,7 @@ import re
 import random
 from bs4 import BeautifulSoup
 import contractions
+import pandas as pd
 
 class BilingualDataset(Dataset):
 
@@ -29,18 +30,6 @@ class BilingualDataset(Dataset):
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
 
-        return (src_text, tgt_text)
-    
-class CustiomTestDataset(Dataset):
-    def __init__(self, ds):
-        self.ds = ds
-
-    def __len__(self):
-        return len(self.ds)
-    
-    def __getitem__(self, idx):
-        src_text = self.ds.wrong[idx]
-        tgt_text = self.ds.right[idx]
         return (src_text, tgt_text)
 
 # create noise
@@ -271,6 +260,10 @@ def load_data(config):
 def filter_data(item, tokenizer_src, tokenizer_tgt, config):
   src_sent = item[config['lang_src']]
   tgt_sent = item[config['lang_tgt']]
+  eng_char = "wfjz"
+  for char in eng_char:
+      if char in src_sent or char in tgt_sent:
+          return False
   len_list_src_token = len(tokenizer_src.encode(src_sent).ids)
   len_list_tgt_token = len(tokenizer_tgt.encode(tgt_sent).ids)
   max_len_list = max(len_list_src_token, len_list_tgt_token)
@@ -402,11 +395,36 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
 
     return train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader
 
+def check_test_item(src_sent, tgt_sent, tokenizer_src, tokenizer_tgt, config):
+    eng_char = "wfjz"
+    for char in eng_char:
+        if char in src_sent or char in tgt_sent:
+            return False
+    len_list_src_token = len(tokenizer_src.encode(src_sent).ids)
+    len_list_tgt_token = len(tokenizer_tgt.encode(tgt_sent).ids)
+    max_len_list = max(len_list_src_token, len_list_tgt_token)
+    min_len_list = min(len_list_src_token, len_list_tgt_token)
+    return max_len_list <= config["max_len"] - 4 and min_len_list > 4
+
 def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
     data_test = config["data_test"]
-    dataset = load_from_disk(data_test)
-    print("\nĐã load data test thành công!\n")
-    test_dataset = CustiomTestDataset(ds=dataset)
+    if not os.path.exists(data_test):
+        raw_data= pd.read_csv("vietnamese_spelling_correction/dataset/dataset.csv")
+        data = []
+        for i in range(len(raw_data)):
+            src_sent = raw_data.wrong[i]
+            tgt_sent = raw_data.right[i]
+            if check_test_item(src_sent=src_sent, tgt_sent=tgt_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
+                data.append({
+                    config["lang_src"]: src_sent,
+                    config["lang_tgt"]: tgt_sent,
+                })
+        dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=["lang_tgt"])
+        torch.save(dataset, data_test)
+        print("Đã lưu data test thành công!\n")
+
+    test_dataset = torch.load(data_test)
+    print("Đã load data test thành công!\n")
 
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
     test_dataloader = DataLoader(test_dataset, batch_size=1,

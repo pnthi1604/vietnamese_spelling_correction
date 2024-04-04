@@ -63,7 +63,7 @@ def get_config():
 
     # Test
     config["beam_test"] = 2
-    config["data_test"] = "dataset.csv"
+    config["data_test"] = "data_test"
 
     # Save
     config["tokenizer_file"] = "tokenizer_{0}.json"
