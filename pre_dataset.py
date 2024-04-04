@@ -30,6 +30,18 @@ class BilingualDataset(Dataset):
         tgt_text = src_target_pair[self.tgt_lang]
 
         return (src_text, tgt_text)
+    
+class CustiomTestDataset(Dataset):
+    def __init__(self, ds):
+        self.ds = ds
+
+    def __len__(self):
+        return len(self.ds)
+    
+    def __getitem__(self, idx):
+        src_text = self.ds.wrong[idx]
+        tgt_text = self.ds.right[idx]
+        return (src_text, tgt_text)
 
 # create noise
 # Lỗi tương đồng về mặt của chữ
@@ -235,12 +247,13 @@ def load_data(config):
 
     if not os.path.exists(data_path):
         dataset = load_dataset(config["data"], config["subset"])
-        dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
-        dataset_split["validation"] = dataset_split.pop("test")
-        dataset_split["test"] = dataset["test"]
-        dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
-        dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
-        dataset_split.save_to_disk(data_path)
+        # dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
+        # dataset_split["validation"] = dataset_split.pop("test")
+        # dataset_split["test"] = dataset["test"]
+        # dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
+        # dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
+        # dataset_split.save_to_disk(data_path)
+        dataset.save_to_disk(data_path)
         print("\nĐã lưu dataset thành công!\n")
 
     dataset = load_from_disk(data_path)
@@ -324,7 +337,13 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
                                                           tokenizer_src=tokenizer_src,
                                                           tokenizer_tgt=tokenizer_tgt,
                                                           config=config))
-        dataset.save_to_disk(map_data_path)
+        dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
+        dataset_split["validation"] = dataset_split.pop("test")
+        dataset_split["test"] = dataset["test"]
+        dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
+        dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
+        dataset_split.save_to_disk(map_data_path)
+        # dataset.save_to_disk(map_data_path)
         print("\nĐã lưu map data thành công!\n")
     
     dataset = load_from_disk(map_data_path)
@@ -384,23 +403,10 @@ def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
     return train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader
 
 def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
-    map_data_path = config["map_data_path"]                                                    
-    if not os.path.exists(map_data_path):
-        dataset = dataset.filter(lambda item: filter_data(item=item,
-                                                          tokenizer_src=tokenizer_src,
-                                                          tokenizer_tgt=tokenizer_tgt,
-                                                          config=config))
-        dataset.save_to_disk(map_data_path)
-        print("\nĐã lưu map data thành công!\n")
-    
-    dataset = load_from_disk(map_data_path)
-    print("\nĐã load map data thành công!\n")
-
-    test_dataset = BilingualDataset(
-        ds=dataset["test"],
-        src_lang=config["lang_src"],
-        tgt_lang=config["lang_tgt"],
-    )
+    data_test = config["data_test"]
+    dataset = load_from_disk(data_test)
+    print("\nĐã load data test thành công!\n")
+    test_dataset = CustiomTestDataset(ds=dataset)
 
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
     test_dataloader = DataLoader(test_dataset, batch_size=1,
