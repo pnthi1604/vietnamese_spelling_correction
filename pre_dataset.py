@@ -260,10 +260,6 @@ def load_data(config):
 def filter_data(item, tokenizer_src, tokenizer_tgt, config):
   src_sent = item[config['lang_src']]
   tgt_sent = item[config['lang_tgt']]
-  eng_char = "wfjz"
-  for char in eng_char:
-      if char in src_sent or char in tgt_sent:
-          return False
   len_list_src_token = len(tokenizer_src.encode(src_sent).ids)
   len_list_tgt_token = len(tokenizer_tgt.encode(tgt_sent).ids)
   max_len_list = max(len_list_src_token, len_list_tgt_token)
