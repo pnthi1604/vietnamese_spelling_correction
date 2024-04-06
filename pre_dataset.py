@@ -27,9 +27,9 @@ class BilingualDataset(Dataset):
 
     def __getitem__(self, idx):
         src_target_pair = self.ds[idx]
-        print(f"{src_target_pair = }")
-        print(self.src_lang)
-        print(self.tgt_lang)
+        # print(f"{src_target_pair = }")
+        # print(self.src_lang)
+        # print(self.tgt_lang)
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
 
@@ -404,7 +404,7 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
 
     dataset = pd.read_csv(data_file_path)
     data = []
-    print(dataset)
+    # print(dataset)
     for i in range(len(dataset)):
         wrong_sent = dataset["wrong"][i]
         right_sent = dataset["right"][i]
@@ -416,7 +416,7 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
         }
         data.append(item)
 
-    print(data)
+    # print(data)
 
     dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=config["lang_tgt"])
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
