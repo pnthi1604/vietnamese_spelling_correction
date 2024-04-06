@@ -79,7 +79,6 @@ def test_model_with_beam_size(config, beam_size):
 
     # get dataloader
     test_dataloader = get_dataloader_test(config=config,
-                                          dataset=dataset,
                                           tokenizer_src=tokenizer_src,
                                           tokenizer_tgt=tokenizer_tgt
     )

@@ -397,7 +397,7 @@ def check_test_item(src_sent, tgt_sent, tokenizer_src, tokenizer_tgt, config):
     min_len_list = min(len_list_src_token, len_list_tgt_token)
     return max_len_list <= config["max_len"] - 4 and min_len_list > 4
 
-def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
+def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
     data_file_path = config["data_test"]
 
     dataset = pd.read_csv(data_file_path)
