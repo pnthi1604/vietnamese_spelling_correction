@@ -26,8 +26,10 @@ class BilingualDataset(Dataset):
         return len(self.ds)
 
     def __getitem__(self, idx):
-        print(self.ds[idx])
         src_target_pair = self.ds[idx]
+        print(f"{src_target_pair = }")
+        print(self.src_lang)
+        print(self.tgt_lang)
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
 
