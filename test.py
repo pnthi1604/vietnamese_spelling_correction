@@ -84,6 +84,8 @@ def test_model_with_beam_size(config, beam_size):
                                           tokenizer_tgt=tokenizer_tgt
     )
 
+    print(f"{test_dataloader = }")
+
     model = get_model(config=config,
                         device=device,
                         src_vocab_size=src_vocab_size,
