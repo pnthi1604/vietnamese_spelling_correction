@@ -418,7 +418,7 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
 
     print(data)
 
-    dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=["lang_tgt"])
+    dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=config["lang_tgt"])
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
     test_dataloader = DataLoader(dataset, batch_size=1,
                                             shuffle=False,
