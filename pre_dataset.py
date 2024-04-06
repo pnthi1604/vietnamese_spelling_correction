@@ -402,6 +402,7 @@ def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
 
     dataset = pd.read_csv(data_file_path)
     data = []
+    print(dataset)
     for i in range(len(dataset)):
         wrong_sent = dataset["wrong"][i]
         right_sent = dataset["right"][i]
