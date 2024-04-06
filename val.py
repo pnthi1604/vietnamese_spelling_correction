@@ -54,8 +54,13 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         predicted.append(tokenizer_tgt.encode(pred_text).tokens)
 
         count += 1
+
+        if not have_test:
+            print_step = 20
+        else:
+            print_step = 500
         
-        if count % 20 == 0 and not have_test:
+        if count % print_step == 0:
             print()
             print(f"{f'SOURCE: ':>12}{src_text}")
             print(f"{f'TARGET: ':>12}{tgt_text}")
