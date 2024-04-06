@@ -21,6 +21,8 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
 
     batch_iterator = tqdm(validation_dataloader, desc=f"Validation Bleu Epoch {epoch:02d}")
     for batch in batch_iterator:
+        #test
+        print(f"{batch = }")
         src = batch['encoder_input'].to(device) # (b, seq_len)
         src_mask = create_src_mask(src, tokenizer_src.token_to_id("[PAD]"), device) # (B, 1, 1, seq_len)
         

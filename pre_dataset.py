@@ -26,6 +26,7 @@ class BilingualDataset(Dataset):
         return len(self.ds)
 
     def __getitem__(self, idx):
+        # print(self.ds[idx])
         src_target_pair = self.ds[idx]
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
@@ -236,12 +237,6 @@ def load_data(config):
 
     if not os.path.exists(data_path):
         dataset = load_dataset(config["data"], config["subset"])
-        # dataset_split = dataset["train"].train_test_split(train_size=config["train_size"], seed=42)
-        # dataset_split["validation"] = dataset_split.pop("test")
-        # dataset_split["test"] = dataset["test"]
-        # dataset_split["bleu_validation"] = dataset_split["validation"].select(range(config["num_bleu_validation"]))
-        # dataset_split["bleu_train"] = dataset_split["train"].select(range(config["num_bleu_validation"]))
-        # dataset_split.save_to_disk(data_path)
         dataset.save_to_disk(data_path)
         print("\nĐã lưu dataset thành công!\n")
 
@@ -403,17 +398,21 @@ def check_test_item(src_sent, tgt_sent, tokenizer_src, tokenizer_tgt, config):
     return max_len_list <= config["max_len"] - 4 and min_len_list > 4
 
 def get_dataloader_test(config, dataset, tokenizer_src, tokenizer_tgt):
-    data_test = config["data_test"]
-    raw_data= pd.read_csv(data_test)
+    data_file_path = config["data_test"]
+
+    dataset = pd.read_csv(data_file_path)
     data = []
-    for i in range(len(raw_data)):
-        src_sent = raw_data.wrong[i]
-        tgt_sent = raw_data.right[i]
-        if check_test_item(src_sent=src_sent, tgt_sent=tgt_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
-            data.append({
-                config["lang_src"]: src_sent,
-                config["lang_tgt"]: tgt_sent,
-            })
+    for i in range(len(dataset)):
+        wrong_sent = dataset["wrong"][i]
+        right_sent = dataset["right"][i]
+        if not check_test_item(src_sent=wrong_sent, tgt_sent=right_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
+            continue
+        item = {
+            config["lang_src"]: wrong_sent,
+            config["lang_tgt"]: right_sent,
+        }
+        data.append(item)
+
     dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=["lang_tgt"])
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
     test_dataloader = DataLoader(dataset, batch_size=1,
