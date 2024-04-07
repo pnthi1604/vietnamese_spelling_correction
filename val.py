@@ -4,7 +4,7 @@ from .beam_search import beam_search
 from .utils import calc_bleu_score, create_src_mask, calc_f_beta, calc_recall, calc_precision
 from torch.nn.utils.rnn import pad_sequence
 
-def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size, have_test=False):
+def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloader, epoch, beam_size, num_example=5):
     device = config["device"]
 
     source_texts = []
@@ -31,7 +31,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         src_text = batch['src_text'][0]
         tgt_text = batch['tgt_text'][0]
 
-        model_out = beam_search(model=model,
+        pred_ids = beam_search(model=model,
                                 config=config,
                                 beam_size=beam_size,
                                 tokenizer_src=tokenizer_src,
@@ -39,12 +39,13 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
                                 src=src,
                                 src_mask=src_mask)
         
-        pred_ids = model_out.detach().cpu().numpy()
         pred_text = tokenizer_tgt.decode(pred_ids)
 
-        padding = pad_sequence([torch.tensor(label_ids).to(device), torch.tensor(pred_ids).to(device)], padding_value=pad_index, batch_first=True)
+        padding = pad_sequence([label_ids, pred_ids.detach().clone()], padding_value=pad_index, batch_first=True)
         label_ids = padding[0]
         pred_ids = padding[1]
+        print(f"{label_ids = }")
+        print(f"{pred_ids = }")
         
         labels.append(label_ids)
         preds.append(pred_ids)
@@ -55,10 +56,7 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
 
         count += 1
 
-        if not have_test:
-            print_step = 20
-        else:
-            print_step = 500
+        print_step = len(validation_dataloader) // num_example
         
         if count % print_step == 0:
             print()
