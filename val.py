@@ -52,6 +52,13 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
         recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
         precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
         f_05 = calc_f_beta(preds=pred_ids, target=label_ids, beta=0.5, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+    
+        recall = recall.item()
+        precision = precision.item()
+        f_05 = f_05.item()
+        print(f"{recall = }")
+        print(f"{precision = }")
+        print(f"{f_05 = }")
         
         labels.append(label_ids)
         preds.append(pred_ids)
