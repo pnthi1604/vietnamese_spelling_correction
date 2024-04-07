@@ -39,9 +39,10 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
                                 src=src,
                                 src_mask=src_mask)
         
-        pred_ids = pred_ids.detach().clone()
+        pred_ids = pred_ids.detach().numpy()
         print(f"{pred_ids = }")
-        pred_text = tokenizer_tgt.decode(pred_ids)
+        print(f"{label_ids = }")
+        pred_text = tokenizer_tgt.decode(pred_ids.tolist())
 
         padding = pad_sequence([label_ids, pred_ids], padding_value=pad_index, batch_first=True)
         label_ids = padding[0]
