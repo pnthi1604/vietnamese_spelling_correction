@@ -160,7 +160,8 @@ def random_ratio(array: list[int]=[], ratios: float=0.9, size: int=0):
 
 def create_noise_random_choice(vi_sent):
     words = vi_sent.split()
-    funcs_noise = [replace_face_char, replace_sound_char, replace_no_accent_char, remove_word, multi_word]
+    # funcs_noise = [replace_face_char, replace_sound_char, replace_no_accent_char, remove_word, multi_word]
+    funcs_noise = [replace_face_char, replace_sound_char, replace_no_accent_char, multi_word]
     if len(words) <= 1:
         return vi_sent
     func_noise = funcs_noise[random.randint(0, len(funcs_noise) - 1)]
@@ -178,16 +179,18 @@ def create_noise(config, vi_sent):
     face_char_ratio = round(config["face_char_ratio"] * ratio, 3)
     sound_char_ratio = round(config["sound_char_ratio"] * ratio, 3)
     no_accent_char_ratio = round(config["no_accent_char_ratio"] * ratio, 3)
-    remove_word_ratio = round(config["remove_word_ratio"] * ratio, 3)
+    # remove_word_ratio = round(config["remove_word_ratio"] * ratio, 3)
     multi_word_ratio = round(config["multi_word_ratio"] * ratio, 3)
     words = vi_sent.split()
-    funcs_noise = [replace_face_char, replace_sound_char, replace_no_accent_char, remove_word, multi_word]
+    # funcs_noise = [replace_face_char, replace_sound_char, replace_no_accent_char, remove_word, multi_word]
+    funcs_noise = [replace_face_char, replace_sound_char, replace_no_accent_char, multi_word]
     ratios = [face_char_ratio,
               sound_char_ratio,
               no_accent_char_ratio,
-              remove_word_ratio,
+            #   remove_word_ratio,
               multi_word_ratio,
-              1 - (face_char_ratio + sound_char_ratio + no_accent_char_ratio + remove_word_ratio + multi_word_ratio)]
+            #   1 - (face_char_ratio + sound_char_ratio + no_accent_char_ratio + remove_word_ratio + multi_word_ratio)]
+              1 - (face_char_ratio + sound_char_ratio + no_accent_char_ratio + multi_word_ratio)]
     rand_error = random_ratio(
         array=list(range(len(ratios))),
         ratios=ratios,

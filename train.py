@@ -6,7 +6,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 from .models.seq2seq_transformer import Seq2seqTransformer
 from .config.config import get_weights_file_path, weights_file_path, save_config, create_all_dic
-from .utils import get_tokenizer, create_src_mask, create_tgt_mask
+from .utils import get_tokenizer, create_src_mask, create_tgt_mask, set_seed
 from .pre_dataset import load_data, get_dataloader
 from .val import validation
 
@@ -51,6 +51,7 @@ def get_lr(global_step: int, config):
   return (config["d_model"] ** -0.5) * min(global_step ** (-0.5), global_step * config["warmup_steps"] ** (-1.5))
 
 def train_model(config, model_filename=None):
+    set_seed()
     # get config and create dictional for save model and tokenizer
     create_all_dic(config=config)
 

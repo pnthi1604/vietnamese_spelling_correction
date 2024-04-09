@@ -6,6 +6,7 @@ from tokenizers.trainers import WordLevelTrainer
 from tokenizers.pre_tokenizers import Whitespace
 from torchtext.data.metrics import bleu_score
 from torchmetrics import Recall, Precision, FBetaScore
+import numpy as np
 
 def get_all_sentences(dataset, lang):
     for item in dataset:
@@ -32,6 +33,11 @@ def get_tokenizer(config, dataset):
         tokenizer_tgt = get_or_build_tokenizer(config, dataset, config["lang_tgt"])
     return tokenizer_src, tokenizer_tgt
 
+def set_seed(seed=42):
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed(seed)
+    np.random.seed(seed)
+
 def calc_bleu_score(refs, cands):
     scores = []
     for j in range(1, 5):
@@ -42,15 +48,15 @@ def calc_bleu_score(refs, cands):
                                  weights=weights))
     return scores
 
-def calc_recall(preds: torch.tensor, target: torch.tensor, tgt_vocab_size: int, pad_index: int, device):
+def calc_recall(preds, target, tgt_vocab_size: int, pad_index: int, device):
     recall = Recall(task="multiclass", average='weighted', num_classes=tgt_vocab_size, ignore_index=pad_index).to(device)
     return recall(preds, target)
 
-def calc_precision(preds: torch.tensor, target: torch.tensor, tgt_vocab_size: int, pad_index: int, device):
+def calc_precision(preds, target, tgt_vocab_size: int, pad_index: int, device):
     precision = Precision(task="multiclass", average='weighted', num_classes=tgt_vocab_size, ignore_index=pad_index).to(device)
     return precision(preds, target)
 
-def calc_f_beta(preds: torch.tensor, target: torch.tensor, beta: float, tgt_vocab_size: int, pad_index: int, device):
+def calc_f_beta(preds, target, beta: float, tgt_vocab_size: int, pad_index: int, device):
     f_beta = FBetaScore(task="multiclass", average='weighted', num_classes=tgt_vocab_size, beta=beta, ignore_index=pad_index).to(device)
     return f_beta(preds, target)
 
