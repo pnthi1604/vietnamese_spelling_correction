@@ -178,6 +178,7 @@ def train_model(config, model_filename=None):
             model.eval()
             batch_iterator = tqdm(validation_dataloader, desc=f"Validation Loss Epoch {epoch:02d}")
             for batch in batch_iterator:
+                break
                 src = batch['encoder_input'].to(device) # (b, seq_len)
                 tgt = batch['decoder_input'].to(device) # (B, seq_len)
                 src_mask = create_src_mask(src, pad_id_token, device) # (B, 1, 1, seq_len)
