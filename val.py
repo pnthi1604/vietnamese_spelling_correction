@@ -41,8 +41,8 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             # print(f"{pred_ids = }")
             # print(f"{label_ids = }")
             pred_text = tokenizer_tgt.decode(pred_ids.detach().cpu().numpy())
-            pred_ids = torch.tensor(tokenizer_tgt.decode(pred_ids)).to(device)
-            label_ids = torch.tensor(tokenizer_tgt.decode(tgt_text)).to(device)
+            pred_ids = torch.tensor(tokenizer_tgt.encode(pred_ids)).to(device)
+            label_ids = torch.tensor(tokenizer_tgt.encode(tgt_text)).to(device)
             
 
             padding = pad_sequence([label_ids, pred_ids], padding_value=pad_index, batch_first=True)
