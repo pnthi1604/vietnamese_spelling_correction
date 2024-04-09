@@ -26,8 +26,6 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             # print(f"{batch = }")
             src = batch['encoder_input'].to(device) # (b, seq_len)
             src_mask = create_src_mask(src, tokenizer_src.token_to_id("[PAD]"), device) # (B, 1, 1, seq_len)
-            
-            label_ids = batch["label"][0].to(device)
 
             src_text = batch['src_text'][0]
             tgt_text = batch['tgt_text'][0]
@@ -43,6 +41,9 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
             # print(f"{pred_ids = }")
             # print(f"{label_ids = }")
             pred_text = tokenizer_tgt.decode(pred_ids.detach().cpu().numpy())
+            pred_ids = tokenizer_tgt.encode(pred_text).ids
+            label_ids = tokenizer_tgt.encode(tgt_text).ids
+            
 
             padding = pad_sequence([label_ids, pred_ids], padding_value=pad_index, batch_first=True)
             label_ids = padding[0]
