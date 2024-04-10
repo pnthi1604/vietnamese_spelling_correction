@@ -122,7 +122,7 @@ def test_model_with_beam_size(config, beam_size):
 
     writer.add_scalar("Test_model_Recall", sum_recall_val, 0)
     writer.add_scalar("Test_model_Precision", sum_precision_val, 0)
-    writer.add_scalar("Test_model_f_1", sum_f_1_val, 0)
+    writer.add_scalar("Test_model_f_1_score", sum_f_1_val, 0)
 
     print(f"{sum_recall_val = }")
     print(f"{sum_precision_val = }")
