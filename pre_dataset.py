@@ -214,9 +214,7 @@ def clean_data(text, lang):
     text = (text.lower()).replace(" '", "'")
     if lang == "en":
         text = contractions.fix(text)
-    if lang == "vi":
-        text = text.replace("you", "u")
-    return text
+    return handle_special_char(text)
 
 def handle_special_char(sent):
     sent = re.sub(r'([.,!?;(){}\[\]])', r' \1 ', sent)
@@ -415,8 +413,8 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
     data = []
     # print(dataset)
     for i in range(len(dataset)):
-        wrong_sent = handle_special_char(dataset.loc[i, "wrong_sent"])
-        right_sent = handle_special_char(dataset.loc[i, "right_sent"])
+        wrong_sent = clean_data(dataset.loc[i, "wrong_sent"], lang=config["lang_src"])
+        right_sent = clean_data(dataset.loc[i, "right_sent"], lang=config["lang_tgt"])
         if not check_test_item(src_sent=wrong_sent, tgt_sent=right_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
             continue
         item = {
