@@ -54,7 +54,7 @@ def get_config():
     # Train
     config["batch_size_train"] = 32
     config["batch_size_validation"] = 32
-    config["num_epochs"] = 10
+    config["num_epochs"] = 5
     config["train_size"] = 0.9
     config["num_bleu_validation"] = 100
 
