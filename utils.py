@@ -5,7 +5,7 @@ from tokenizers.models import WordLevel
 from tokenizers.trainers import WordLevelTrainer
 from tokenizers.pre_tokenizers import Whitespace
 from torchtext.data.metrics import bleu_score
-from torchmetrics import Recall, Precision, FBetaScore
+from torchmetrics import Recall, Precision, FBetaScore, Accuracy
 import numpy as np
 
 def get_all_sentences(dataset, lang):
@@ -55,6 +55,10 @@ def calc_recall(preds, target, tgt_vocab_size: int, pad_index: int, device):
 def calc_precision(preds, target, tgt_vocab_size: int, pad_index: int, device):
     precision = Precision(task="multiclass", average='weighted', num_classes=tgt_vocab_size, ignore_index=pad_index).to(device)
     return precision(preds, target)
+
+def calc_accuracy(preds, target, tgt_vocab_size: int, pad_index: int, device):
+    accuracy = Accuracy(task="multiclass", average='weighted', num_classes=tgt_vocab_size, ignore_index=pad_index).to(device)
+    return accuracy(preds, target)
 
 def calc_f_beta(preds, target, beta: float, tgt_vocab_size: int, pad_index: int, device):
     f_beta = FBetaScore(task="multiclass", average='weighted', num_classes=tgt_vocab_size, beta=beta, ignore_index=pad_index).to(device)
