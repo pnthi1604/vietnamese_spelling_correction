@@ -8,7 +8,7 @@ def get_config():
     # Dataset
     config["lang_src"] = "noise_vi"
     config["lang_tgt"] = "vi"
-    config["ratio"] = 0.2
+    config["ratio"] = 0.3
     config["sound_char_ratio"] = 0.3
     config["no_accent_char_ratio"] = 0.2 
     config["remove_word_ratio"] = 0.15
@@ -64,7 +64,7 @@ def get_config():
     # Test
     config["beam_test"] = 2
     config["data_test"] = "vietnamese_spelling_correction/dataset/dataset.csv"
-    config["f_beta"] = 0.5
+    config["f_beta"] = 0.1
 
     # Save
     config["tokenizer_file"] = "tokenizer_{0}.json"
