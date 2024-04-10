@@ -206,14 +206,14 @@ def train_model(config, model_filename=None):
             }, epoch)
             writer.close()
 
-            scores_val, sum_recall_val, sum_precision_val, sum_f_1_val = validation(model=model,
+            scores_val, sum_recall_val, sum_precision_val, sum_f_05_val = validation(model=model,
                                     config=config,
                                     tokenizer_src=tokenizer_src,
                                     tokenizer_tgt=tokenizer_tgt,
                                     validation_dataloader=bleu_validation_dataloader,
                                     epoch=epoch,
                                     beam_size=2)
-            scores_train, sum_recall_train, sum_precision_train, sum_f_1_train = validation(model=model,
+            scores_train, sum_recall_train, sum_precision_train, sum_f_05_train = validation(model=model,
                                       config=config,
                                       tokenizer_src=tokenizer_src,
                                       tokenizer_tgt=tokenizer_tgt,
@@ -239,17 +239,17 @@ def train_model(config, model_filename=None):
                 "val": sum_precision_val
             }, epoch)
 
-            writer.add_scalars("f_1_score", {
-                "train": sum_f_1_train,
-                "val": sum_f_1_val
+            writer.add_scalars("f_05_score", {
+                "train": sum_f_05_train,
+                "val": sum_f_05_val
             }, epoch)
 
             print(f"{sum_recall_train = }")
             print(f"{sum_recall_val = }")
             print(f"{sum_precision_train = }")
             print(f"{sum_precision_val = }")
-            print(f"{sum_f_1_train = }")
-            print(f"{sum_f_1_val = }")
+            print(f"{sum_f_05_train = }")
+            print(f"{sum_f_05_val = }")
             #test
             # break
             #test

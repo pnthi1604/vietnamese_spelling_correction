@@ -78,30 +78,30 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
 
                 recall = calc_recall(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
                 precision = calc_precision(preds=pred_ids, target=label_ids, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
-                f_1 = calc_f_beta(preds=pred_ids, target=label_ids, beta=config["f_beta"], tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+                f_05 = calc_f_beta(preds=pred_ids, target=label_ids, beta=config["f_beta"], tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
             
                 recall = recall.item()
                 precision = precision.item()
-                f_1 = f_1.item()
+                f_05 = f_05.item()
                 print(f"{recall = }")
                 print(f"{precision = }")
-                print(f"{f_1 = }")
+                print(f"{f_05 = }")
 
         labels = torch.cat(labels, dim=0)
         preds = torch.cat(preds, dim=0)
 
         recall = calc_recall(preds=preds, target=labels, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
         precision = calc_precision(preds=preds, target=labels, tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
-        f_1 = calc_f_beta(preds=preds, target=labels, beta=config["f_beta"], tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
+        f_05 = calc_f_beta(preds=preds, target=labels, beta=config["f_beta"], tgt_vocab_size=tgt_vocab_size, pad_index=pad_index, device=device)
 
         scores_corpus = calc_bleu_score(refs=expected,
                                     cands=predicted)
         
         recall = recall.item()
         precision = precision.item()
-        f_1 = f_1.item()
+        f_05 = f_05.item()
         print(f"{recall = }")
         print(f"{precision = }")
-        print(f"{f_1 = }")
+        print(f"{f_05 = }")
         
-        return scores_corpus, recall, precision, f_1
+        return scores_corpus, recall, precision, f_05
