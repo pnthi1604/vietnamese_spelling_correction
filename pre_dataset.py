@@ -218,6 +218,12 @@ def clean_data(text, lang):
         text = text.replace("you", "u")
     return text
 
+def handle_special_char(sent):
+    sent = re.sub(r'([.,!?;(){}\[\]])', r' \1 ', sent)
+    sent = re.sub(r'\s{2,}', ' ', sent)
+    sent = sent.strip()
+    return sent
+
 def preprocess_function(config, example):
     output = {}
     vi_sent = clean_data(example["translation"][config["lang_tgt"]], lang=config["lang_tgt"])
@@ -409,8 +415,8 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
     data = []
     # print(dataset)
     for i in range(len(dataset)):
-        wrong_sent = dataset["wrong"][i]
-        right_sent = dataset["right"][i]
+        wrong_sent = handle_special_char(dataset.loc[i, "wrong_sent"])
+        right_sent = handle_special_char(dataset.loc[i, "right_sent"])
         if not check_test_item(src_sent=wrong_sent, tgt_sent=right_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
             continue
         item = {
