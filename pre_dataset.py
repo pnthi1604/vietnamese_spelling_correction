@@ -413,8 +413,8 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
     data = []
     # print(dataset)
     for i in range(len(dataset)):
-        wrong_sent = clean_data(dataset.loc[i, "wrong_sent"], lang=config["lang_src"])
-        right_sent = clean_data(dataset.loc[i, "right_sent"], lang=config["lang_tgt"])
+        wrong_sent = clean_data(dataset.wrong[i], lang=config["lang_src"])
+        right_sent = clean_data(dataset.right[i], lang=config["lang_tgt"])
         if not check_test_item(src_sent=wrong_sent, tgt_sent=right_sent, tokenizer_src=tokenizer_src, tokenizer_tgt=tokenizer_tgt, config=config):
             continue
         item = {
