@@ -36,7 +36,7 @@ class BilingualDataset(Dataset):
         return (src_text, tgt_text)
 
 # create noise
-# Lỗi tương đồng về mặt của chữ
+# Lỗi tương đồng về hình dạng của chữ
 chars_regrex = '[aàảãáạăằẳẵắặâầẩẫấậoòỏõóọôồổỗốộơờởỡớợeèẻẽéẹêềểễếệuùủũúụưừửữứựiìỉĩíịyỳỷỹýỵnvm]'
 same_chars = {
     'a': ['á', 'à', 'ả', 'ã', 'ạ', 'ấ', 'ầ', 'ẩ', 'ẫ', 'ậ', 'ắ', 'ằ', 'ẳ', 'ẵ', 'ặ'],
@@ -68,7 +68,7 @@ def replace_face_char(text):
         return text
     text = _random_replace(text, match_chars)
     return text
-# End: lỗi tương đồng về mặt của chữ
+# End: lỗi tương đồng về hình dạng của chữ
 
 # Lỗi tương đồng về âm thanh khi đọc
 three_char = {
