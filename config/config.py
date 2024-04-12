@@ -8,12 +8,12 @@ def get_config():
     # Dataset
     config["lang_src"] = "noise_vi"
     config["lang_tgt"] = "vi"
-    config["ratio"] = 0.3
+    config["ratio"] = 0.2
     config["sound_char_ratio"] = 0.3
     config["no_accent_char_ratio"] = 0.2 
-    config["remove_word_ratio"] = 0.15
-    config["multi_word_ratio"] = 0.15
-    config["face_char_ratio"] = 0.2
+    config["remove_word_ratio"] = 0.1
+    config["multi_word_ratio"] = 0.1
+    config["face_char_ratio"] = 0.3
     config["num_noise"] = 3
 
     # Device
