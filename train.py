@@ -59,6 +59,7 @@ def train_model(config, model_filename=None):
     device = torch.device(device)
     
     # load data and tokenizer
+    dataset = None
     if not config["custom_dataset"]:
         dataset = load_data(config)
     tokenizer_src, tokenizer_tgt = get_tokenizer(config=config,
