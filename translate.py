@@ -4,10 +4,10 @@ from .train import get_model
 from tokenizers import Tokenizer
 from .config import weights_file_path
 from .utils import create_src_mask
-from .pre_dataset import clean_data, handle_lang_vi
+from .pre_dataset import clean_data
 
 def handle_sentence(sentence, config):
-    return handle_lang_vi(sent=clean_data(text=sentence, lang=config["lang_src"]), lang=config["lang_src"], config=config)
+    return clean_data(text=sentence, lang=config["lang_src"])
 
 def translate_with_beam_size(config, beam_size, sentence):
     device = config["device"]
