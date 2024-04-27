@@ -72,7 +72,7 @@ def replace_face_char(text):
 
 # Lỗi tương đồng về âm thanh khi đọc
 three_char = {
-    "ngh": ["gh"]
+    "ngh": ["ng"]
 }
 two_char = {
     "ng": ["g", "n"],
