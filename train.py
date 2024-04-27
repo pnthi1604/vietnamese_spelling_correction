@@ -7,7 +7,7 @@ from torch.utils.tensorboard import SummaryWriter
 from .models.seq2seq_transformer import Seq2seqTransformer
 from .config.config import get_weights_file_path, weights_file_path, save_config, create_all_dic
 from .utils import get_tokenizer, create_src_mask, create_tgt_mask, set_seed
-from .pre_dataset import load_data, get_dataloader
+from .pre_dataset import load_data, get_dataloader, get_dataloader_custom_dataset
 from .val import validation
 
 def get_model(config, device, src_vocab_size, tgt_vocab_size, pad_id_token):
@@ -59,7 +59,8 @@ def train_model(config, model_filename=None):
     device = torch.device(device)
     
     # load data and tokenizer
-    dataset = load_data(config)
+    if not config["custom_dataset"]:
+        dataset = load_data(config)
     tokenizer_src, tokenizer_tgt = get_tokenizer(config=config,
                                                  dataset=dataset)
     
@@ -73,11 +74,17 @@ def train_model(config, model_filename=None):
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
 
     # get dataloader
-    train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader = get_dataloader(config=config,
-                                                                                                                dataset=dataset,
-                                                                                                                tokenizer_src=tokenizer_src,
-                                                                                                                tokenizer_tgt=tokenizer_tgt,
-    )
+    if not config["custom_dataset"]:
+        train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader = get_dataloader(config=config,
+                                                                                                                    dataset=dataset,
+                                                                                                                    tokenizer_src=tokenizer_src,
+                                                                                                                    tokenizer_tgt=tokenizer_tgt,
+        )
+    else:
+        train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader = get_dataloader_custom_dataset(config=config,
+                                                                                                                                   tokenizer_src=tokenizer_src,
+                                                                                                                                   tokenizer_tgt=tokenizer_tgt,
+        )
 
     config["len_train_dataloader"] = len(train_dataloader)
     config["len_validation_dataloader"] = len(validation_dataloader)
