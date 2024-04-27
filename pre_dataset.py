@@ -34,6 +34,27 @@ class BilingualDataset(Dataset):
         tgt_text = src_target_pair[self.tgt_lang]
 
         return (src_text, tgt_text)
+    
+class CustomDataset(Dataset):
+
+    def __init__(self, ds, src_lang, tgt_lang):
+        super().__init__()
+        self.ds = ds
+        self.src_lang = src_lang
+        self.tgt_lang = tgt_lang
+
+    def __len__(self):
+        return len(self.ds)
+
+    def __getitem__(self, idx):
+        src_target_pair = self.ds.iloc[idx]
+        print(f"{src_target_pair = }")
+        print(self.src_lang)
+        print(self.tgt_lang)
+        src_text = src_target_pair[self.src_lang]
+        tgt_text = src_target_pair[self.tgt_lang]
+
+        return (src_text, tgt_text)
 
 # create noise
 # Lỗi tương đồng về hình dạng của chữ
