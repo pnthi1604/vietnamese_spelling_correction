@@ -9,7 +9,7 @@ def get_config():
     config["lang_src"] = "noise_vi"
     config["lang_tgt"] = "vi"
     config["ratio"] = 0.2
-    config["sound_char_ratio"] = 0.4
+    config["sound_char_ratio"] = 0.
     config["no_accent_char_ratio"] = 0.2 
     config["remove_word_ratio"] = 0.05
     config["multi_word_ratio"] = 0.05
@@ -78,10 +78,10 @@ def get_config():
 
     # File custom dataset
     config["custom_dataset"] = True
-    config["custom_train_dataset"] = f"{config["data_path"]}/custom_train_dataset"
-    config["custom_validation_dataset"] = f"{config["data_path"]}/custom_validation_dataset"
-    config["custom_bleu_validation_dataset"] = f"{config["data_path"]}/custom_bleu_validation_dataset"
-    config["custom_bleu_train_dataset"] = f"{config["data_path"]}/custom_bleu_train_dataset"
+    config["custom_train_dataset"] = f"{config['data_path']}/custom_train_dataset"
+    config["custom_validation_dataset"] = f"{config['data_path']}/custom_validation_dataset"
+    config["custom_bleu_validation_dataset"] = f"{config['data_path']}/custom_bleu_validation_dataset"
+    config["custom_bleu_train_dataset"] = f"{config['data_path']}/custom_bleu_train_dataset"
 
     # Different
     config["preload"] = "latest"
