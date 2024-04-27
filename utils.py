@@ -14,18 +14,20 @@ def get_all_sentences(dataset, lang):
 
 def get_or_build_tokenizer(config, dataset, lang):
     tokenizer_path = Path(config['tokenizer_file'].format(lang))
-    if not Path.exists(tokenizer_path):
+    if not Path.exists(tokenizer_path) and dataset:
         tokenizer = Tokenizer(WordLevel(unk_token="[UNK]"))
         tokenizer.pre_tokenizer = Whitespace()
         trainer = WordLevelTrainer(special_tokens=["[UNK]", "[PAD]", "[SOS]", "[EOS]"], min_frequency=2)
         tokenizer.train_from_iterator(get_all_sentences(dataset, lang), trainer=trainer)
         tokenizer.save(str(tokenizer_path))
-    else:
+    elif Path.exists(tokenizer_path):
         tokenizer = Tokenizer.from_file(str(tokenizer_path))
+    else:
+        raise ValueError(f"Không tìm thấy tokenizer cho ngôn ngữ {lang}")
     return tokenizer
 
 def get_tokenizer(config, dataset):
-    if "train" in dataset:
+    if dataset and "train" in dataset:
         tokenizer_src = get_or_build_tokenizer(config, dataset["train"], config["lang_src"])
         tokenizer_tgt = get_or_build_tokenizer(config, dataset["train"], config["lang_tgt"])
     else:
