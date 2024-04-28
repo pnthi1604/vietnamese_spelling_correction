@@ -351,7 +351,6 @@ def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
 def get_dataloader_custom_dataset(config, tokenizer_src, tokenizer_tgt):
     df = pd.read_csv(config["custom_dataset"])
     train_size = int(len(df) * config["train_size"])
-    df = df.sample(frac=1).reset_index(drop=True)
     train_df = df[:train_size]
     validation_df = df[train_size:]
     test_validation_df = validation_df[:config["num_bleu_validation"]]  
