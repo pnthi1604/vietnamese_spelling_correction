@@ -334,7 +334,7 @@ def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
 
         max_len = max(max_len, len(src), len(tgt), len(label))
 
-    assert max_len <= 100, f"max_len: {max_len}"
+    assert max_len > 100, f"max_len: {max_len}"
 
     src_batch = pad_sequence(src_batch, padding_value=pad_id_token, batch_first=True)
     tgt_batch = pad_sequence(tgt_batch, padding_value=pad_id_token, batch_first=True)
