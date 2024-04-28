@@ -286,7 +286,7 @@ def filter_data(item, tokenizer_src, tokenizer_tgt, config):
   len_list_tgt_token = len(tokenizer_tgt.encode(tgt_sent).ids)
   max_len_list = max(len_list_src_token, len_list_tgt_token)
   min_len_list = min(len_list_src_token, len_list_tgt_token)
-  return max_len_list <= config["max_len"] - 4 and min_len_list > 4
+  return max_len_list <= config["max_len"] - 10 and min_len_list > 4
 
 def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
     src_batch, tgt_batch, label_batch, src_text_batch, tgt_text_batch = [], [], [], [], []
@@ -491,7 +491,7 @@ def get_dataloader_test(config, tokenizer_src, tokenizer_tgt):
         }
         data.append(item)
 
-    # print(data)
+    print(f"len test data = {len(data)}")
 
     dataset = BilingualDataset(ds=data, src_lang=config["lang_src"], tgt_lang=config["lang_tgt"])
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
