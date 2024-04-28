@@ -178,9 +178,9 @@ def train_model(config, model_filename=None):
               writer.flush()
 
             global_step += 1
-            #test
-            # break
-            #test
+            test
+            break
+            test
         
         if config["lr_scheduler"] and config["steplr"]:
             lr_scheduler.step()
