@@ -77,11 +77,7 @@ def get_config():
     config["save_config_pattern"] = "config/config_*"
 
     # File custom dataset
-    config["custom_dataset"] = True
-    config["custom_train_dataset"] = f"{config['data_path']}/custom_train_dataset"
-    config["custom_validation_dataset"] = f"{config['data_path']}/custom_validation_dataset"
-    config["custom_bleu_validation_dataset"] = f"{config['data_path']}/custom_bleu_validation_dataset"
-    config["custom_bleu_train_dataset"] = f"{config['data_path']}/custom_bleu_train_dataset"
+    config["custom_dataset"] = None
 
     # Different
     config["preload"] = "latest"

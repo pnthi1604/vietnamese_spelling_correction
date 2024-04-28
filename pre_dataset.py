@@ -48,9 +48,6 @@ class CustomDataset(Dataset):
 
     def __getitem__(self, idx):
         src_target_pair = self.ds.iloc[idx]
-        print(f"{src_target_pair = }")
-        print(self.src_lang)
-        print(self.tgt_lang)
         src_text = src_target_pair[self.src_lang]
         tgt_text = src_target_pair[self.tgt_lang]
 
@@ -345,10 +342,18 @@ def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
     }
 
 def get_dataloader_custom_dataset(config, tokenizer_src, tokenizer_tgt):
-    train_dataset = torch.load(config["custom_train_dataset"])
-    validation_dataset = torch.load(config["custom_validation_dataset"])
-    bleu_validation_dataset = torch.load(config["custom_bleu_validation_dataset"])
-    bleu_train_dataset = torch.load(config["custom_bleu_train_dataset"])
+    df = pd.read_csv(config["custom_dataset"])
+    train_size = int(len(df) * config["train_size"])
+    df = df.sample(frac=1).reset_index(drop=True)
+    train_df = df[:train_size]
+    validation_df = df[train_size:]
+    test_validation_df = validation_df[:config["num_bleu_validation"]]  
+    test_train_df = train_df[:config["num_bleu_validation"]]
+
+    train_dataset = CustomDataset(train_df, config["lang_src"], config["lang_tgt"])
+    validation_dataset = CustomDataset(validation_df, config["lang_src"], config["lang_tgt"])
+    bleu_validation_dataset = CustomDataset(test_validation_df, config["lang_src"], config["lang_tgt"])
+    bleu_train_dataset = CustomDataset(test_train_df, config["lang_src"], config["lang_tgt"])
 
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
 
