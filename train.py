@@ -179,7 +179,7 @@ def train_model(config, model_filename=None):
 
             global_step += 1
             #test
-            break
+            # break
             #test
         
         if config["lr_scheduler"] and config["steplr"]:
