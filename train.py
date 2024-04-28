@@ -150,8 +150,8 @@ def train_model(config, model_filename=None):
             src_mask = create_src_mask(src, pad_id_token, device) # (B, 1, 1, seq_len)
             tgt_mask = create_tgt_mask(tgt, pad_id_token, device) # (B, 1, seq_len, seq_len)
 
-            print(f"{src.shape = }")
-            print(f"{tgt.shape = }")
+            # print(f"{src.shape = }")
+            # print(f"{tgt.shape = }")
 
             encoder_output = model.encode(src=src, src_mask=src_mask)
             decoder_output = model.deocde(encoder_output=encoder_output,
