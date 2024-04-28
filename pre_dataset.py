@@ -292,6 +292,9 @@ def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
     src_batch, tgt_batch, label_batch, src_text_batch, tgt_text_batch = [], [], [], [], []
     sos_token = torch.tensor([tokenizer_tgt.token_to_id("[SOS]")], dtype=torch.int64)
     eos_token = torch.tensor([tokenizer_tgt.token_to_id("[EOS]")], dtype=torch.int64)
+
+    max_len = 0
+
     for src_text, tgt_text in batch:
         enc_input_tokens = tokenizer_src.encode(src_text).ids
         dec_input_tokens = tokenizer_tgt.encode(tgt_text).ids
@@ -328,6 +331,10 @@ def collate_fn(batch, tokenizer_src, tokenizer_tgt, pad_id_token):
         label_batch.append(label)
         src_text_batch.append(src_text)
         tgt_text_batch.append(tgt_text)
+
+        max_len = max(max_len, len(src), len(tgt), len(label))
+
+    assert max_len <= 100, f"max_len: {max_len}"
 
     src_batch = pad_sequence(src_batch, padding_value=pad_id_token, batch_first=True)
     tgt_batch = pad_sequence(tgt_batch, padding_value=pad_id_token, batch_first=True)
