@@ -134,6 +134,7 @@ def train_model(config, model_filename=None):
     loss_fn = nn.CrossEntropyLoss(ignore_index=pad_id_token, label_smoothing=config["label_smoothing"]).to(device)
 
     for epoch in range(initial_epoch, config["num_epochs"]):
+        break
         torch.cuda.empty_cache()
         model.train()
         if config["lr_scheduler"]:
@@ -179,7 +180,7 @@ def train_model(config, model_filename=None):
 
             global_step += 1
             #test
-            break
+            # break
             #test
         
         if config["lr_scheduler"] and config["steplr"]:
@@ -210,7 +211,7 @@ def train_model(config, model_filename=None):
                 batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
                 validation_loss += loss.item()
                 #test
-                break
+                # break
                 #test
 
             writer.add_scalars("Loss", {
@@ -270,9 +271,9 @@ def train_model(config, model_filename=None):
             print(f"{sum_f_05_val = }")
             print(f"{sum_accuracy_train = }")
             print(f"{sum_accuracy_val = }")
-            #test
+            # test
             # break
-            #test
+            # test
 
 
         print(f"Mean train loss: {train_loss / len(train_dataloader)}")
@@ -289,5 +290,5 @@ def train_model(config, model_filename=None):
         save_config(config=config, epoch=epoch)
 
         # test
-        break
+        # break
         # test
