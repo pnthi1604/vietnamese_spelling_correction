@@ -134,7 +134,6 @@ def train_model(config, model_filename=None):
     loss_fn = nn.CrossEntropyLoss(ignore_index=pad_id_token, label_smoothing=config["label_smoothing"]).to(device)
 
     for epoch in range(initial_epoch, config["num_epochs"]):
-        break
         torch.cuda.empty_cache()
         model.train()
         if config["lr_scheduler"]:
@@ -220,57 +219,57 @@ def train_model(config, model_filename=None):
             }, epoch)
             writer.close()
 
-            scores_val, sum_recall_val, sum_precision_val, sum_f_05_val, sum_accuracy_val = validation(model=model,
-                                    config=config,
-                                    tokenizer_src=tokenizer_src,
-                                    tokenizer_tgt=tokenizer_tgt,
-                                    validation_dataloader=bleu_validation_dataloader,
-                                    epoch=epoch,
-                                    beam_size=2)
-            scores_train, sum_recall_train, sum_precision_train, sum_f_05_train, sum_accuracy_train = validation(model=model,
-                                      config=config,
-                                      tokenizer_src=tokenizer_src,
-                                      tokenizer_tgt=tokenizer_tgt,
-                                      validation_dataloader=bleu_train_dataloader,
-                                      epoch=epoch,
-                                      beam_size=2)
+            # scores_val, sum_recall_val, sum_precision_val, sum_f_05_val, sum_accuracy_val = validation(model=model,
+            #                         config=config,
+            #                         tokenizer_src=tokenizer_src,
+            #                         tokenizer_tgt=tokenizer_tgt,
+            #                         validation_dataloader=bleu_validation_dataloader,
+            #                         epoch=epoch,
+            #                         beam_size=2)
+            # scores_train, sum_recall_train, sum_precision_train, sum_f_05_train, sum_accuracy_train = validation(model=model,
+            #                           config=config,
+            #                           tokenizer_src=tokenizer_src,
+            #                           tokenizer_tgt=tokenizer_tgt,
+            #                           validation_dataloader=bleu_train_dataloader,
+            #                           epoch=epoch,
+            #                           beam_size=2)
             
-            for i in range(len(scores_val)):
-                writer.add_scalars(f"Bleu_{i + 1}", {
-                    "train": scores_train[i],
-                    "val": scores_val[i]
-                }, epoch)
+            # for i in range(len(scores_val)):
+            #     writer.add_scalars(f"Bleu_{i + 1}", {
+            #         "train": scores_train[i],
+            #         "val": scores_val[i]
+            #     }, epoch)
                 
-                print(f"bleu_{i + 1}_train: {scores_train[i]} - bleu_{i + 1}_val: {scores_val[i]}")
+            #     print(f"bleu_{i + 1}_train: {scores_train[i]} - bleu_{i + 1}_val: {scores_val[i]}")
             
-            writer.add_scalars("recall", {
-                "train": sum_recall_train,
-                "val": sum_recall_val
-            }, epoch)
+            # writer.add_scalars("recall", {
+            #     "train": sum_recall_train,
+            #     "val": sum_recall_val
+            # }, epoch)
 
-            writer.add_scalars("precision", {
-                "train": sum_precision_train,
-                "val": sum_precision_val
-            }, epoch)
+            # writer.add_scalars("precision", {
+            #     "train": sum_precision_train,
+            #     "val": sum_precision_val
+            # }, epoch)
 
-            writer.add_scalars("accuracy", {
-                "train": sum_accuracy_train,
-                "val": sum_accuracy_val
-            }, epoch)
+            # writer.add_scalars("accuracy", {
+            #     "train": sum_accuracy_train,
+            #     "val": sum_accuracy_val
+            # }, epoch)
 
-            writer.add_scalars("f_05_score", {
-                "train": sum_f_05_train,
-                "val": sum_f_05_val
-            }, epoch)
+            # writer.add_scalars("f_05_score", {
+            #     "train": sum_f_05_train,
+            #     "val": sum_f_05_val
+            # }, epoch)
 
-            print(f"{sum_recall_train = }")
-            print(f"{sum_recall_val = }")
-            print(f"{sum_precision_train = }")
-            print(f"{sum_precision_val = }")
-            print(f"{sum_f_05_train = }")
-            print(f"{sum_f_05_val = }")
-            print(f"{sum_accuracy_train = }")
-            print(f"{sum_accuracy_val = }")
+            # print(f"{sum_recall_train = }")
+            # print(f"{sum_recall_val = }")
+            # print(f"{sum_precision_train = }")
+            # print(f"{sum_precision_val = }")
+            # print(f"{sum_f_05_train = }")
+            # print(f"{sum_f_05_val = }")
+            # print(f"{sum_accuracy_train = }")
+            # print(f"{sum_accuracy_val = }")
             # test
             # break
             # test
