@@ -70,7 +70,9 @@ def test_model_with_beam_size(config, beam_size):
     device = torch.device(device)
 
     # load data and tokenizer
-    dataset = load_data(config)
+    dataset = None
+    if not config["custom_test_dataset"]:
+        dataset = load_data(config)
     tokenizer_src, tokenizer_tgt = get_tokenizer(config=config,
                                                  dataset=dataset)
     
