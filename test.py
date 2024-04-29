@@ -4,7 +4,7 @@ from .config import weights_file_path
 import torch
 from torch.utils.tensorboard import SummaryWriter
 from .utils import get_tokenizer, set_seed
-from .pre_dataset import load_data, get_dataloader_test
+from .pre_dataset import load_data, get_dataloader_test, get_dataloader_custom_test_dataset
 
 def test_model(config):
     set_seed()
@@ -79,10 +79,17 @@ def test_model_with_beam_size(config, beam_size):
     pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
 
     # get dataloader
-    test_dataloader = get_dataloader_test(config=config,
-                                          tokenizer_src=tokenizer_src,
-                                          tokenizer_tgt=tokenizer_tgt
-    )
+    if not config["custom_test_dataset"]:
+        test_dataloader = get_dataloader_test(config=config,
+                                            tokenizer_src=tokenizer_src,
+                                            tokenizer_tgt=tokenizer_tgt
+        )
+    else:
+        test_dataloader = get_dataloader_custom_test_dataset(
+            config=config,
+            tokenizer_src=tokenizer_src,
+            tokenizer_tgt=tokenizer_tgt
+        )
 
     # print(f"{test_dataloader = }")
 

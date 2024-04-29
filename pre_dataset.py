@@ -391,6 +391,19 @@ def get_dataloader_custom_dataset(config, tokenizer_src, tokenizer_tgt):
 
     return train_dataloader, validation_dataloader, bleu_validation_dataloader, bleu_train_dataloader
 
+def get_dataloader_custom_test_dataset(config, tokenizer_src, tokenizer_tgt):
+    df = pd.read_csv(config["custom_test_dataset"])
+    test_dataset = CustomDataset(df, config["lang_src"], config["lang_tgt"])
+    pad_id_token = tokenizer_tgt.token_to_id("[PAD]")
+    test_dataloader = DataLoader(test_dataset, batch_size=1,
+                                            shuffle=False,
+                                            collate_fn=lambda batch: collate_fn(batch=batch,
+                                                                                pad_id_token=pad_id_token,
+                                                                                tokenizer_src=tokenizer_src,
+                                                                                tokenizer_tgt=tokenizer_tgt))
+
+    return test_dataloader
+
 def get_dataloader(config, dataset, tokenizer_src, tokenizer_tgt):
     map_data_path = config["map_data_path"]                                                    
     if not os.path.exists(map_data_path):
