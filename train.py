@@ -150,9 +150,6 @@ def train_model(config, model_filename=None):
             src_mask = create_src_mask(src, pad_id_token, device) # (B, 1, 1, seq_len)
             tgt_mask = create_tgt_mask(tgt, pad_id_token, device) # (B, 1, seq_len, seq_len)
 
-            # print(f"{src.shape = }")
-            # print(f"{tgt.shape = }")
-
             encoder_output = model.encode(src=src, src_mask=src_mask)
             decoder_output = model.deocde(encoder_output=encoder_output,
                                           tgt=tgt,
@@ -178,9 +175,6 @@ def train_model(config, model_filename=None):
               writer.flush()
 
             global_step += 1
-            #test
-            # break
-            #test
         
         if config["lr_scheduler"] and config["steplr"]:
             lr_scheduler.step()
@@ -191,7 +185,6 @@ def train_model(config, model_filename=None):
             model.eval()
             batch_iterator = tqdm(validation_dataloader, desc=f"Validation Loss Epoch {epoch:02d}")
             for batch in batch_iterator:
-                # break
                 src = batch['encoder_input'].to(device) # (b, seq_len)
                 tgt = batch['decoder_input'].to(device) # (B, seq_len)
                 src_mask = create_src_mask(src, pad_id_token, device) # (B, 1, 1, seq_len)
@@ -209,9 +202,6 @@ def train_model(config, model_filename=None):
                 loss = loss_fn(logits.view(-1, tokenizer_tgt.get_vocab_size()), label.view(-1))
                 batch_iterator.set_postfix({"loss": f"{loss.item():6.3f}"})
                 validation_loss += loss.item()
-                #test
-                # break
-                #test
 
             writer.add_scalars("Loss", {
                 "Train": train_loss / len(train_dataloader),
@@ -270,10 +260,6 @@ def train_model(config, model_filename=None):
             print(f"{sum_f_05_val = }")
             print(f"{sum_accuracy_train = }")
             print(f"{sum_accuracy_val = }")
-            # test
-            # break
-            # test
-
 
         print(f"Mean train loss: {train_loss / len(train_dataloader)}")
         print(f"Mean validation loss: {validation_loss / len(validation_dataloader)}")
@@ -287,7 +273,3 @@ def train_model(config, model_filename=None):
                         model_filename=model_filename,
                         lr_scheduler=lr_scheduler)
         save_config(config=config, epoch=epoch)
-
-        # test
-        # break
-        # test

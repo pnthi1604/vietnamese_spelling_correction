@@ -38,8 +38,6 @@ def validation(model, config, tokenizer_src, tokenizer_tgt, validation_dataloade
                                     src=src,
                                     src_mask=src_mask)
             
-            # print(f"{pred_ids = }")
-            # print(f"{label_ids = }")
             pred_text = tokenizer_tgt.decode(pred_ids.detach().cpu().numpy())
             pred_ids = torch.tensor(tokenizer_tgt.encode(pred_text).ids, dtype=torch.int64).to(device)
             label_ids = torch.tensor(tokenizer_tgt.encode(tgt_text).ids, dtype=torch.int64).to(device)
